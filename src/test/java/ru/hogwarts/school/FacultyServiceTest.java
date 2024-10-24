@@ -3,56 +3,59 @@ package ru.hogwarts.school;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.hogwarts.school.models.Faculty;
+import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.service.FacultyService;
 
+import java.util.*;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
 public class FacultyServiceTest {
-    private FacultyService facultyService;
+    Faculty faculty;
 
     @BeforeEach
     public void setUp() {
-        facultyService = new FacultyService();
-        facultyService.addFaculty(new Faculty("Hogwarts", "Hogwarts"));
+        faculty = new Faculty();
+        faculty.setName("Hogwarts");
     }
+
+    @Mock
+    private FacultyRepository facultyRepository;
+
+    @InjectMocks
+    private FacultyService facultyService;
+
 
     @Test
     public void testGetAllFaculties() {
-        Assertions.assertEquals(facultyService.getFaculties().get(1L).getName(), "Hogwarts");
+        when(facultyRepository.findAll()).thenReturn(new ArrayList<>(List.of(faculty)));
+        Assertions.assertEquals(facultyService.getFaculties().size(), 1);
     }
 
     @Test
     public void testGetFacultyById() {
+        when(facultyRepository.findById(1L)).thenReturn(Optional.of(faculty));
         Assertions.assertEquals(facultyService.getFaculty(1L).getName(), "Hogwarts");
     }
 
     @Test
     public void testAddFaculty() {
-        facultyService.addFaculty(new Faculty("Hogwarts", "Hogwarts"));
-        Assertions.assertEquals(facultyService.getFaculties().keySet().size(), 2);
-    }
-
-    @Test
-    public void testRemoveFaculty() {
-        facultyService.removeFaculty(1L);
-        Assertions.assertEquals(facultyService.getFaculties().keySet().size(), 0);
+        when(facultyRepository.save(faculty)).thenReturn(faculty);
+        Assertions.assertEquals(facultyService.addFaculty(faculty).getName(), faculty.getName());
     }
 
     @Test
     public void testUpdateFaculty() {
-        facultyService.putFaculty(1L, new Faculty("HogwartsNew", "Hogwarts"));
-        Assertions.assertEquals(facultyService.getFaculty(1L).getName(), "HogwartsNew");
-    }
-
-    @Test
-    public void testUpdateFacultyNull(){
-        Assertions.assertNull(facultyService.putFaculty(100L, new Faculty("a", "ase")));
-    }
-
-    @Test
-    public void testGetFacultiesByColor() {
-        facultyService.addFaculty(new Faculty("Hogwarts", "HogwartsNew"));
-        Assertions.assertEquals(facultyService.getFilterFaculty("Hogwarts").getFirst().getColor(),
-                "Hogwarts");
+        when(facultyRepository.save(faculty)).thenReturn(faculty);
+        Assertions.assertEquals(facultyService.putFaculty(faculty).getName(), faculty.getName());
     }
 
 }

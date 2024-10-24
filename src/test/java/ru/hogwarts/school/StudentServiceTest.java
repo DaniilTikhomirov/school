@@ -3,57 +3,61 @@ package ru.hogwarts.school;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.hogwarts.school.models.Faculty;
 import ru.hogwarts.school.models.Student;
+import ru.hogwarts.school.repository.FacultyRepository;
+import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.FacultyService;
 import ru.hogwarts.school.service.StudentService;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
 public class StudentServiceTest {
-    private StudentService studentService;
+    Student student;
 
     @BeforeEach
     public void setUp() {
-        studentService = new StudentService();
-        studentService.addStudents(new Student("Hogwarts", 12));
+        student = new Student();
+        student.setName("Hogwarts");
     }
 
+    @Mock
+    private StudentRepository studentRepository;
+
+    @InjectMocks
+    private StudentService studentService;
+
+
     @Test
-    public void testGetAllStudents() {
-        Assertions.assertEquals(studentService.getStudents().get(1L).getName(), "Hogwarts");
+    public void testGetAllStudent() {
+        when(studentRepository.findAll()).thenReturn(new ArrayList<>(List.of(student)));
+        Assertions.assertEquals(studentService.getStudents().size(), 1);
     }
 
     @Test
     public void testGetStudentById() {
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
         Assertions.assertEquals(studentService.getStudent(1L).getName(), "Hogwarts");
     }
 
     @Test
     public void testAddStudent() {
-        studentService.addStudents(new Student("Hogwarts", 123));
-        Assertions.assertEquals(studentService.getStudents().keySet().size(), 2);
-    }
-
-    @Test
-    public void testRemoveStudent() {
-        studentService.removeStudent(1L);
-        Assertions.assertEquals(studentService.getStudents().keySet().size(), 0);
+        when(studentRepository.save(student)).thenReturn(student);
+        Assertions.assertEquals(studentService.addStudents(student).getName(), student.getName());
     }
 
     @Test
     public void testUpdateStudent() {
-        studentService.putStudent(1L, new Student("HogwartsNew", 3));
-        Assertions.assertEquals(studentService.getStudent(1L).getName(), "HogwartsNew");
-    }
-
-    @Test
-    public void testUpdateStudentNull(){
-        Assertions.assertNull(studentService.putStudent(100L, new Student("Hogwarts", 100)));
-    }
-
-    @Test
-    public void testGetStudentsByColor() {
-        studentService.addStudents(new Student("Hogwarts", 2));
-        Assertions.assertEquals(studentService.getFilterStudents(2).getFirst().getAge(),
-                2L);
+        when(studentRepository.save(student)).thenReturn(student);
+        Assertions.assertEquals(studentService.putStudent(student).getName(), student.getName());
     }
 }
