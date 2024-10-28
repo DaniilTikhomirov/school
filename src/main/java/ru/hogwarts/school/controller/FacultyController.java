@@ -34,12 +34,12 @@ public class FacultyController {
         return ResponseEntity.ok(faculty);
     }
 
-    @PostMapping("/add")
+    @PostMapping()
     public ResponseEntity<Faculty> addStudent(@RequestBody Faculty faculty) {
         return ResponseEntity.ok(facultyService.addFaculty(faculty));
     }
 
-    @PutMapping("/put")
+    @PutMapping()
     public ResponseEntity<Faculty> putStudent(@RequestBody Faculty faculty) {
         Faculty updatedFaculty = facultyService.putFaculty(faculty);
         if (updatedFaculty == null) {
@@ -48,7 +48,7 @@ public class FacultyController {
         return ResponseEntity.ok(updatedFaculty);
     }
 
-    @DeleteMapping("del/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity delStudent(@PathVariable Long id) {
         facultyService.removeFaculty(id);
         return ResponseEntity.ok().build();
