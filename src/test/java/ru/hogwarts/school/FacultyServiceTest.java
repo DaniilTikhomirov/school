@@ -58,4 +58,17 @@ public class FacultyServiceTest {
         Assertions.assertEquals(facultyService.putFaculty(faculty).getName(), faculty.getName());
     }
 
+    @Test
+    public void testGetFacultiesByNameOrColor() {
+        when(facultyRepository.findFacultiesByNameIgnoreCaseOrColorIgnoreCase(any(), any())).
+                thenReturn(List.of(faculty));
+        Assertions.assertEquals(facultyService.getFacultiesByNameOrColor("", "").size(), 1);
+    }
+
+    @Test
+    public void testGetStudentsFromFaculty() {
+        when(facultyRepository.findById(1L)).thenReturn(Optional.of(faculty));
+        Assertions.assertNull(facultyService.getStudentsFromFaculty(1L));
+    }
+
 }

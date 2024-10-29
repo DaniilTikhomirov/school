@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,6 +29,9 @@ public class StudentServiceTest {
     public void setUp() {
         student = new Student();
         student.setName("Hogwarts");
+        Faculty faculty = new Faculty();
+        faculty.setName("Hogwarts2");
+        student.setFaculty(faculty);
     }
 
     @Mock
@@ -59,5 +63,17 @@ public class StudentServiceTest {
     public void testUpdateStudent() {
         when(studentRepository.save(student)).thenReturn(student);
         Assertions.assertEquals(studentService.putStudent(student).getName(), student.getName());
+    }
+
+    @Test
+    public void testGetStudentBetweenAge() {
+        when(studentRepository.findStudentsByAgeBetween(anyInt(), anyInt())).thenReturn(List.of(student));
+        Assertions.assertEquals(studentService.getStudentBetweenAge(1, 10).size(), 1);
+    }
+
+    @Test
+    public void testGetStudentFaculty() {
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
+        Assertions.assertEquals(studentService.getStudentFaculty(1L).getName(), "Hogwarts2");
     }
 }

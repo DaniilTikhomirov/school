@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.models.Faculty;
+import ru.hogwarts.school.models.Student;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("faculty")
@@ -52,6 +54,19 @@ public class FacultyController {
     public ResponseEntity delStudent(@PathVariable Long id) {
         facultyService.removeFaculty(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/find")
+    public ResponseEntity<Collection<Faculty>> findFaculties(@RequestParam(value = "name", required = false) String name,
+                                                             @RequestParam(value = "color", required = false) String color)
+    {
+        return ResponseEntity.ok(facultyService.getFacultiesByNameOrColor(name, color));
+    }
+
+
+    @GetMapping("get/students/{id}")
+    public ResponseEntity<Set<Student>> getStudents(@PathVariable Long id) {
+        return ResponseEntity.ok(facultyService.getStudentsFromFaculty(id));
     }
 
 }
