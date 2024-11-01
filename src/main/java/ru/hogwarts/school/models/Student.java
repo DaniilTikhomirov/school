@@ -13,7 +13,7 @@ public class Student {
     private String name;
     private int age;
 
-    @OneToOne
+    @OneToOne(mappedBy = "student")
     private Avatar avatar;
     @ManyToOne
     @JoinColumn(name = "facultyID")
