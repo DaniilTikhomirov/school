@@ -37,14 +37,22 @@ public class StudentService {
     }
 
     public Collection<Student> getStudentBetweenAge(int startAge, int endAge) {
-        return  studentRepository.findStudentsByAgeBetween(startAge, endAge);
+        return studentRepository.findStudentsByAgeBetween(startAge, endAge);
     }
 
-    public Faculty getStudentFaculty(Long id){
+    public Faculty getStudentFaculty(Long id) {
         return getStudent(id).getFaculty();
     }
 
     public Student putStudent(Student student) {
         return this.studentRepository.save(student);
+    }
+
+    public Double getAverageStudentAge() {
+        return studentRepository.getAverageAgeStudents();
+    }
+
+    public Collection<Student> getLastStudents(Integer limit) {
+        return studentRepository.getLastStudent(limit);
     }
 }

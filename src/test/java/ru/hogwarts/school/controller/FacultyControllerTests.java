@@ -163,4 +163,17 @@ public class FacultyControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
     }
+
+    @Test
+    public void getCountStudentTest() throws Exception {
+        when(facultyRepository.countStudentsInFaculty(any(Long.class))).thenReturn(3);
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/faculty/get/students/count/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(3));
+
+
+    }
 }

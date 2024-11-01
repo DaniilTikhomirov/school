@@ -3,8 +3,10 @@ package ru.hogwarts.school.service;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.hogwarts.school.exeptions.BadPage;
 import ru.hogwarts.school.models.Avatar;
 import ru.hogwarts.school.models.Student;
 import ru.hogwarts.school.repository.AvatarRepository;
@@ -15,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
@@ -74,14 +77,14 @@ public class AvatarService {
         return null;
     }
 
-    public Avatar findAvatar(Long StudentID){
+    public Avatar findAvatar(Long StudentID) {
         return avatarRepository.findByStudent_Id(StudentID).orElse(new Avatar());
     }
 
     private byte[] generateAvatar(Path path) throws IOException {
         try (InputStream inputStream = Files.newInputStream(path);
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 1024);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+             BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 1024);
+             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             BufferedImage image = ImageIO.read(bufferedInputStream);
             int height = image.getHeight() / (image.getWidth() / 100);
             BufferedImage avatar = new BufferedImage(100, height, image.getType());
@@ -95,5 +98,14 @@ public class AvatarService {
 
     private String getExtension(String filename) {
         return filename.substring(filename.lastIndexOf(".") + 1);
+    }
+
+
+    public List<Avatar> getAvatar(int page, int size) {
+        if (page < 1){
+            throw new BadPage();
+        }
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+        return avatarRepository.findAll(pageRequest).getContent();
     }
 }

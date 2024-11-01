@@ -13,6 +13,7 @@ import ru.hogwarts.school.service.AvatarService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/avatar")
@@ -25,7 +26,7 @@ public class AvatarController {
 
     @PostMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> getAvatar(@PathVariable Long id, @RequestParam MultipartFile file) throws IOException {
-        if (file.getSize() > 1024 * 300){
+        if (file.getSize() > 1024 * 300) {
             return ResponseEntity.badRequest().body("File is big");
         }
         avatarService.uploadAvatar(id, file);
@@ -56,5 +57,11 @@ public class AvatarController {
         headers.setContentType(MediaType.valueOf(Files.probeContentType(avatar.toPath())));
         headers.setContentLength(avatar_img.length);
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar_img);
+    }
+
+    @GetMapping()
+    public ResponseEntity<Collection<Avatar>> getAvatar(@RequestParam("page") Integer page,
+                                                       @RequestParam("size") Integer size) {
+        return ResponseEntity.ok(avatarService.getAvatar(page, size));
     }
 }

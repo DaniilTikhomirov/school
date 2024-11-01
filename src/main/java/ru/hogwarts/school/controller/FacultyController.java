@@ -58,8 +58,7 @@ public class FacultyController {
 
     @GetMapping("/find")
     public ResponseEntity<Collection<Faculty>> findFaculties(@RequestParam(value = "name", required = false) String name,
-                                                             @RequestParam(value = "color", required = false) String color)
-    {
+                                                             @RequestParam(value = "color", required = false) String color) {
         return ResponseEntity.ok(facultyService.getFacultiesByNameOrColor(name, color));
     }
 
@@ -67,6 +66,11 @@ public class FacultyController {
     @GetMapping("get/students/{id}")
     public ResponseEntity<Set<Student>> getStudents(@PathVariable Long id) {
         return ResponseEntity.ok(facultyService.getStudentsFromFaculty(id));
+    }
+
+    @GetMapping("get/students/count/{id}")
+    public ResponseEntity<Integer> countStudents(@PathVariable Long id) {
+        return ResponseEntity.ok(facultyService.getStudentsCount(id));
     }
 
 }

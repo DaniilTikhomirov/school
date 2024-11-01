@@ -109,7 +109,6 @@ public class StudentControllerTests {
                 .andExpect(jsonPath("$[0].age").value(age));
 
 
-
     }
 
     @Test
@@ -175,6 +174,40 @@ public class StudentControllerTests {
                 .andExpect(jsonPath("$.name").value(name))
                 .andExpect(jsonPath("$.color").value("red"));
 
+
+    }
+
+    @Test
+    public void averageAgeTest() throws Exception {
+        when(studentRepository.getAverageAgeStudents()).thenReturn(12.21);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/student/get/average/age")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(12.21));
+    }
+
+    @Test
+    public void limitTest() throws Exception {
+        JSONObject studentObj = new JSONObject();
+        studentObj.put("name", name);
+        studentObj.put("age", age);
+
+        Student student = new Student();
+        student.setName(name);
+        student.setAge(age);
+        when(studentRepository.getLastStudent(any(Integer.class))).thenReturn(List.of(student));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/student/get/last/student/1")
+                        .content(studentObj.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value(name))
+                .andExpect(jsonPath("$[0].age").value(age));
 
     }
 }

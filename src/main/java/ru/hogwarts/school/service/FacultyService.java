@@ -42,7 +42,11 @@ public class FacultyService {
         return facultyRepository.findFacultiesByNameIgnoreCaseOrColorIgnoreCase(name, color);
     }
 
-    public Set<Student> getStudentsFromFaculty(Long id){
+    public Set<Student> getStudentsFromFaculty(Long id) {
         return getFaculty(id).getStudents();
+    }
+
+    public Integer getStudentsCount(Long id) {
+        return facultyRepository.countStudentsInFaculty(id);
     }
 }
