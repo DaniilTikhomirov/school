@@ -55,4 +55,8 @@ public class StudentService {
     public Collection<Student> getLastStudents(Integer limit) {
         return studentRepository.getLastStudent(limit);
     }
+
+    public Integer countStudent(){
+        return studentRepository.countStudent();
+    }
 }

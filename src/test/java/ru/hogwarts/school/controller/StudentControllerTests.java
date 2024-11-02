@@ -210,4 +210,16 @@ public class StudentControllerTests {
                 .andExpect(jsonPath("$[0].age").value(age));
 
     }
+
+    @Test
+    public void countTest() throws Exception {
+        when(studentRepository.countStudent()).thenReturn(1);
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/student/count/student")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(1));
+
+    }
 }

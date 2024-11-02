@@ -76,4 +76,9 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getLastStudents(limit));
     }
 
+    @GetMapping("count/student")
+    public ResponseEntity<Integer> countStudent(){
+        return ResponseEntity.ok(studentService.countStudent());
+    }
+
 }

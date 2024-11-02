@@ -15,4 +15,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query(value = "SELECT * FROM student ORDER BY id DESC LIMIT :limit", nativeQuery = true)
     Collection<Student> getLastStudent(Integer limit);
+
+    @Query(value = "SELECT COUNT(*) FROM student", nativeQuery = true)
+    Integer countStudent();
 }
