@@ -2,6 +2,9 @@ package ru.hogwarts.school.models;
 
 import jakarta.persistence.*;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 
 @Entity
 public class Avatar {
@@ -62,5 +65,28 @@ public class Avatar {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Avatar{" +
+                "id=" + id +
+                ", filePath='" + filePath + '\'' +
+                ", fileSize=" + fileSize +
+                ", mediaType='" + mediaType + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Avatar avatar = (Avatar) o;
+        return Objects.equals(id, avatar.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
