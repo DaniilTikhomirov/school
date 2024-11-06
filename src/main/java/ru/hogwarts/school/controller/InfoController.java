@@ -5,11 +5,17 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.hogwarts.school.service.InfoService;
 
 @RestController
 @RequestMapping("info")
 @Profile("default")
 public class InfoController {
+    private final InfoService infoService;
+
+    public InfoController(InfoService infoService) {
+        this.infoService = infoService;
+    }
 
     @Value("${server.port}")
     private Integer port;
@@ -17,6 +23,11 @@ public class InfoController {
     @GetMapping()
     public String info() {
         return "Server port: " + port;
+    }
+
+    @GetMapping("streams")
+    public Integer streams() {
+        return infoService.getReduce();
     }
 
 
