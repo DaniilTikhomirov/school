@@ -81,4 +81,14 @@ public class StudentController {
         return ResponseEntity.ok(studentService.countStudent());
     }
 
+    @GetMapping("get/sort/student/{symbol}")
+    public ResponseEntity<Collection<String>> getSortStudent(@PathVariable String symbol) {
+        return ResponseEntity.ok(studentService.getAllNamesStartSymbol(symbol));
+    }
+
+    @GetMapping("get/average")
+    public ResponseEntity<Double> getAverage() {
+        return ResponseEntity.ok(studentService.getAverageStudentAge());
+    }
+
 }

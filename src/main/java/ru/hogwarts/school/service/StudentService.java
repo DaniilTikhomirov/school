@@ -72,4 +72,27 @@ public class StudentService {
         logger.info("Count students");
         return studentRepository.countStudent();
     }
+
+    public Collection<String> getAllNamesStartSymbol(String symbol){
+        logger.info("Get all names start symbol {}", symbol);
+
+        Collection<Student> students = getStudents();
+
+        return students.stream().
+                parallel().
+                filter(o -> o.getName().toLowerCase().startsWith(symbol.toLowerCase())).
+                map(o -> o.getName().toUpperCase()).
+                sorted().toList();
+    }
+
+    public Double getAverageAge(){
+        logger.info("Get average age");
+        Collection<Student> students = getStudents();
+
+        return students.
+                stream().
+                parallel().
+                mapToInt(Student::getAge).
+                average().orElse(0.0);
+    }
 }
