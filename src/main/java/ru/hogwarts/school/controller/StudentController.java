@@ -91,4 +91,59 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getAverageStudentAge());
     }
 
+
+    @GetMapping("/students/print-parallel")
+    public ResponseEntity<String> printParallel() {
+        List<Student> students = studentService.getStudents().stream().toList();
+        if(students.size() < 6){
+            return ResponseEntity.ok("Add student");
+        }
+
+        System.out.println(students.getFirst());
+        System.out.println(students.get(1));
+
+        new Thread(() -> {
+            System.out.println(students.get(2));
+            System.out.println(students.get(3));
+        }).start();
+
+        new Thread(() -> {
+            System.out.println(students.get(4));
+            System.out.println(students.get(5));
+        }).start();
+
+        return ResponseEntity.ok("finish");
+    }
+
+    @GetMapping("/students/print-synchronized")
+    public ResponseEntity<String> printSynchronized() {
+        List<Student> students = studentService.getStudents().stream().toList();
+        if(students.size() < 6){
+            return ResponseEntity.ok("Add student");
+        }
+
+        printStudentParallel(0, students);
+        printStudentParallel(1, students);
+
+        new Thread(() -> {
+            printStudentParallel(2, students);
+            printStudentParallel(3, students);
+        }).start();
+
+        new Thread(() -> {
+            printStudentParallel(4, students);
+            printStudentParallel(5, students);
+        }).start();
+
+        return ResponseEntity.ok("finish");
+    }
+
+    private synchronized void printStudentParallel(int index, List<Student> students) {
+        System.out.println(students.get(index));
+        try {
+            Thread.sleep(30);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
