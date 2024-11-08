@@ -16,6 +16,8 @@ import java.util.Map;
 public class StudentController {
     private final StudentService studentService;
 
+    private final Object flag = new Object();
+
     @Autowired
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
@@ -138,12 +140,14 @@ public class StudentController {
         return ResponseEntity.ok("finish");
     }
 
-    private synchronized void printStudentParallel(int index, List<Student> students) {
+    private void printStudentParallel(int index, List<Student> students) {
+        synchronized (flag){
         System.out.println(students.get(index));
         try {
             Thread.sleep(30);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
     }
 }
